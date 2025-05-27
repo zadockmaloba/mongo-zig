@@ -44,7 +44,43 @@ pub fn build(b: *std.Build) void {
 
     const bson_mod = try bson_build.addBsonToLibrary(b, lib, upstream, target, optimize);
     bson_mod.addConfigHeader(common_conf);
+
+    const jsonsl_mod = try bson_build.addJsonslToLibrary(b, lib, upstream, target, optimize);
+    jsonsl_mod.addConfigHeader(common_conf);
+
     lib_mod.addImport("bson", bson_mod);
+    lib_mod.addImport("jsonsl", jsonsl_mod);
+
+    inline for (bson_build.bson_config_files) |_header| {
+        const tmp = b.addConfigHeader(
+            .{
+                .style = .{ .cmake = upstream.path("src/libbson/src/bson/" ++ _header ++ ".in") },
+                .include_path = "bson/" ++ _header,
+            },
+            .{
+                .libbson_VERSION_MAJOR = 2,
+                .libbson_VERSION_MINOR = 0,
+                .libbson_VERSION_PATCH = 1,
+                .libbson_VERSION_FULL = .@"2.0.1",
+                .libbson_VERSION_PRERELEASE = null,
+                .BSON_BYTE_ORDER = 1234,
+                .BSON_HAVE_STDBOOL_H = 1,
+                .BSON_OS = 1,
+                .BSON_HAVE_CLOCK_GETTIME = 1,
+                .BSON_HAVE_STRINGS_H = 1,
+                .BSON_HAVE_STRNLEN = 1,
+                .BSON_HAVE_SNPRINTF = 1,
+                .BSON_HAVE_GMTIME_R = 1,
+                .BSON_HAVE_TIMESPEC = 1,
+                .BSON_HAVE_RAND_R = 1,
+                .BSON_HAVE_STRLCPY = 1,
+                .BSON_HAVE_ALIGNED_ALLOC = 1,
+            },
+        );
+        lib.installConfigHeader(tmp);
+        bson_mod.addConfigHeader(tmp);
+        jsonsl_mod.addConfigHeader(tmp);
+    }
 
     //==========================================
 

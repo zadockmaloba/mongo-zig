@@ -91,7 +91,6 @@ pub fn addJsonslToLibrary(
 
     jsonsl_mod.addIncludePath(upstream.path("src/common/src"));
     jsonsl_mod.addIncludePath(upstream.path("src/libbson/src"));
-    jsonsl_mod.addIncludePath(b.path("zig-out/include/"));
 
     jsonsl_mod.addCMacro("BSON_COMPILATION", "1");
 

@@ -1,5 +1,6 @@
 const std = @import("std");
 const bson_build = @import("build/bson.zig");
+const common_build = @import("build/common.zig");
 
 const common_config_files = .{
     "common-config.h",
@@ -42,14 +43,18 @@ pub fn build(b: *std.Build) void {
 
     lib.installConfigHeader(common_conf);
 
+    const comm_mod = try common_build.addCommonToLibrary(b, lib, upstream, target, optimize);
+    comm_mod.addConfigHeader(common_conf);
+
     const bson_mod = try bson_build.addBsonToLibrary(b, lib, upstream, target, optimize);
     bson_mod.addConfigHeader(common_conf);
 
     const jsonsl_mod = try bson_build.addJsonslToLibrary(b, lib, upstream, target, optimize);
     jsonsl_mod.addConfigHeader(common_conf);
 
-    lib_mod.addImport("bson", bson_mod);
-    lib_mod.addImport("jsonsl", jsonsl_mod);
+    lib_mod.addImport("mongo_common", comm_mod);
+    lib_mod.addImport("mongo_bson", bson_mod);
+    lib_mod.addImport("mongo_jsonsl", jsonsl_mod);
 
     inline for (bson_build.bson_config_files) |_header| {
         const tmp = b.addConfigHeader(
@@ -78,6 +83,8 @@ pub fn build(b: *std.Build) void {
             },
         );
         lib.installConfigHeader(tmp);
+
+        comm_mod.addConfigHeader(tmp);
         bson_mod.addConfigHeader(tmp);
         jsonsl_mod.addConfigHeader(tmp);
     }

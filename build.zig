@@ -1,6 +1,7 @@
 const std = @import("std");
 const bson_build = @import("build/bson.zig");
 const common_build = @import("build/common.zig");
+const kms_build = @import("build/kms-message.zig");
 
 const common_config_files = .{
     "common-config.h",
@@ -46,6 +47,9 @@ pub fn build(b: *std.Build) void {
     const comm_mod = try common_build.addCommonToLibrary(b, lib, upstream, target, optimize);
     comm_mod.addConfigHeader(common_conf);
 
+    const kms_mod = try kms_build.addKmsToLibrary(b, lib, upstream, target, optimize);
+    kms_mod.addConfigHeader(common_conf);
+
     const bson_mod = try bson_build.addBsonToLibrary(b, lib, upstream, target, optimize);
     bson_mod.addConfigHeader(common_conf);
 
@@ -53,6 +57,7 @@ pub fn build(b: *std.Build) void {
     jsonsl_mod.addConfigHeader(common_conf);
 
     lib_mod.addImport("mongo_common", comm_mod);
+    lib_mod.addImport("mongo_kms", kms_mod);
     lib_mod.addImport("mongo_bson", bson_mod);
     lib_mod.addImport("mongo_jsonsl", jsonsl_mod);
 
@@ -84,6 +89,7 @@ pub fn build(b: *std.Build) void {
         );
         lib.installConfigHeader(tmp);
 
+        kms_mod.addConfigHeader(tmp);
         comm_mod.addConfigHeader(tmp);
         bson_mod.addConfigHeader(tmp);
         jsonsl_mod.addConfigHeader(tmp);

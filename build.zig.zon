@@ -1,0 +1,21 @@
+.{
+
+    .name = .mongo_zig,
+    .version = "0.0.0",
+    .fingerprint = 0x3a15feebcffde0b4, // Changing this has security and trust implications.
+    .minimum_zig_version = "0.14.0",
+    .dependencies = .{
+        .@"mongo-c" = .{
+            .url = "https://github.com/mongodb/mongo-c-driver/archive/refs/tags/2.0.1.tar.gz",
+            .hash = "N-V-__8AACr8cAKxRp1Z9I4KymJqTxO3R2RZdDFtFIJ8NLBa",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        // For example...
+        //"LICENSE",
+        //"README.md",
+    },
+}

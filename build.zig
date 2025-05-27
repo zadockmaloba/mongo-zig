@@ -2,6 +2,7 @@ const std = @import("std");
 const bson_build = @import("build/bson.zig");
 const common_build = @import("build/common.zig");
 const kms_build = @import("build/kms-message.zig");
+const utf8_build = @import("build/utf8proc.zig");
 
 const common_config_files = .{
     "common-config.h",
@@ -50,6 +51,9 @@ pub fn build(b: *std.Build) void {
     const kms_mod = try kms_build.addKmsToLibrary(b, lib, upstream, target, optimize);
     kms_mod.addConfigHeader(common_conf);
 
+    const utf8_mod = try utf8_build.addUtf8ToLibrary(b, lib, upstream, target, optimize);
+    utf8_mod.addConfigHeader(common_conf);
+
     const bson_mod = try bson_build.addBsonToLibrary(b, lib, upstream, target, optimize);
     bson_mod.addConfigHeader(common_conf);
 
@@ -57,6 +61,7 @@ pub fn build(b: *std.Build) void {
     jsonsl_mod.addConfigHeader(common_conf);
 
     lib_mod.addImport("mongo_common", comm_mod);
+    lib_mod.addImport("mongo_utf8", utf8_mod);
     lib_mod.addImport("mongo_kms", kms_mod);
     lib_mod.addImport("mongo_bson", bson_mod);
     lib_mod.addImport("mongo_jsonsl", jsonsl_mod);

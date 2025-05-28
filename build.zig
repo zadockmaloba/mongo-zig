@@ -33,6 +33,12 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    const zlib_dep = b.dependency("zlib", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    lib.linkLibrary(zlib_dep.artifact("z"));
+
     const common_conf = b.addConfigHeader(
         .{
             .style = .{ .cmake = upstream.path("src/common/src/" ++ "common-config.h.in") },

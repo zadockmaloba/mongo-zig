@@ -1,5 +1,4 @@
 .{
-
     .name = .mongo_zig,
     .version = "0.0.0",
     .fingerprint = 0x3a15feebcffde0b4, // Changing this has security and trust implications.
@@ -8,6 +7,10 @@
         .@"mongo-c" = .{
             .url = "https://github.com/mongodb/mongo-c-driver/archive/refs/tags/2.0.1.tar.gz",
             .hash = "N-V-__8AACr8cAKxRp1Z9I4KymJqTxO3R2RZdDFtFIJ8NLBa",
+        },
+        .zlib = .{
+            .url = "https://github.com/allyourcodebase/zlib/archive/refs/tags/1.3.1.tar.gz",
+            .hash = "zlib-1.3.1-AAAAACEMAAA0qyoSrfgBb_p25ItL4yRf_TBRk-26TYMF",
         },
     },
     .paths = .{

@@ -11,7 +11,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        zig-version: ["master"]
+        os: [ubuntu-latest]
+        include:
+          - zig-version: "0.14.0"
+            os: ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Check out repository
@@ -24,6 +33,9 @@ jobs:
 
       - name: Set up Zig
         uses: mlugg/setup-zig@v1
+        with:
+          version: ${{ matrix.zig-version }}
+          use-cache: false
 
       - name: Run `build`
-        run: zig build
+        run: zig build --summary all

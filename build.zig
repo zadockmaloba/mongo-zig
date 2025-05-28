@@ -94,7 +94,7 @@ pub fn build(b: *std.Build) void {
                 .BSON_HAVE_GMTIME_R = 1,
                 .BSON_HAVE_TIMESPEC = 1,
                 .BSON_HAVE_RAND_R = 1,
-                .BSON_HAVE_STRLCPY = 1,
+                .BSON_HAVE_STRLCPY = 0, //Fails in Linux systems if set to true
                 .BSON_HAVE_ALIGNED_ALLOC = 1,
             },
         );

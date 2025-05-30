@@ -70,13 +70,6 @@ pub fn build(b: *std.Build) void {
     const mongo_mod = try mongo_build.addMongoToLibrary(b, lib, upstream, target, optimize);
     mongo_mod.addConfigHeader(common_conf);
 
-    lib_mod.addImport("mongo_common", comm_mod);
-    lib_mod.addImport("mongo_utf8", utf8_mod);
-    lib_mod.addImport("mongo_kms", kms_mod);
-    lib_mod.addImport("mongo_bson", bson_mod);
-    lib_mod.addImport("mongo_jsonsl", jsonsl_mod);
-    lib_mod.addImport("mongo_mongoc", mongo_mod);
-
     inline for (bson_build.bson_config_files) |_header| {
         const tmp = b.addConfigHeader(
             .{

@@ -88,7 +88,7 @@ pub fn build(b: *std.Build) void {
                 .BSON_HAVE_STDBOOL_H = 1,
                 .BSON_OS = 1,
                 .BSON_HAVE_CLOCK_GETTIME = 1,
-                .BSON_HAVE_STRINGS_H = 0, //Fails in Linux systems if set to true
+                .BSON_HAVE_STRINGS_H = 1,
                 .BSON_HAVE_STRNLEN = 0, //Fails in Linux systems if set to true
                 .BSON_HAVE_SNPRINTF = 0,
                 .BSON_HAVE_GMTIME_R = 1,

@@ -67,6 +67,7 @@ const jsonsl_src_files = &.{"jsonsl.c"};
 
 const CFLAGS = &.{
     "-std=c23",
+    "-pthread"
 };
 
 pub fn addJsonslToLibrary(
@@ -119,8 +120,13 @@ pub fn addBsonToLibrary(
 
     bson_mod.addIncludePath(upstream.path("src/common/src"));
     bson_mod.addIncludePath(upstream.path("src/libbson/src"));
-
+ 
     bson_mod.addCMacro("BSON_COMPILATION", "1");
 
+    if (target.result.os.tag == .linux) {
+        bson_mod.addCMacro("_POSIX_C_SOURCE", "200809L");
+        bson_mod.addCMacro("_GNU_SOURCE", "1");
+        //bson_mod.linkSystemLibrary("pthread", .{});
+    }
     return bson_mod;
 }

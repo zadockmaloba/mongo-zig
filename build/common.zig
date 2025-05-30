@@ -12,6 +12,7 @@ const comm_src_files = &.{
 
 const CFLAGS = &.{
     "-std=c23",
+    "-pthread",
 };
 
 pub fn addCommonToLibrary(
@@ -38,6 +39,12 @@ pub fn addCommonToLibrary(
     comm_mod.addIncludePath(upstream.path("src/libbson/src"));
 
     comm_mod.addCMacro("BSON_COMPILATION", "1");
+
+    if (target.result.os.tag == .linux) {
+        comm_mod.addCMacro("_POSIX_C_SOURCE", "200809L");
+        comm_mod.addCMacro("_GNU_SOURCE", "1");
+        //comm_mod.linkSystemLibrary("pthread", .{});
+    }
 
     return comm_mod;
 }

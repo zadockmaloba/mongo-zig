@@ -86,8 +86,8 @@ pub fn addMongoToLibrary(
                 .MONGOC_ENABLE_COMPRESSION_ZLIB = 1,
                 .MONGOC_ENABLE_COMPRESSION_ZSTD = 0,
                 .MONGOC_ENABLE_SHM_COUNTERS = 0,
-                .MONGOC_ENABLE_RDTSCP = 1,
-                .MONGOC_HAVE_SCHED_GETCPU = 1,
+                .MONGOC_ENABLE_RDTSCP = 0, //Fails on ARM systems
+                .MONGOC_HAVE_SCHED_GETCPU = 0, //Fails on ARM systems
                 .MONGOC_TRACE = 1,
                 .MONGOC_ENABLE_CLIENT_SIDE_ENCRYPTION = 0, //TODO: Find a way to enable client side encryption
                 .MONGOC_HAVE_SS_FAMILY = 1,

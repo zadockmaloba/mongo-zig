@@ -15,7 +15,7 @@ pub fn addMongoToLibrary(
     optimize: std.builtin.OptimizeMode,
 ) !*std.Build.Module {
     const mongo_mod = b.createModule(.{
-        .root_source_file = null,
+        .root_source_file = b.path("src/mongo.zig"),
         .target = target,
         .optimize = optimize,
     });

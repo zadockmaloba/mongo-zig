@@ -65,10 +65,7 @@ const jsonsl_header_files = &.{"jsonsl.h"};
 
 const jsonsl_src_files = &.{"jsonsl.c"};
 
-const CFLAGS = &.{
-    "-std=c23",
-    "-pthread"
-};
+const CFLAGS = &.{ "-std=c23", "-pthread" };
 
 pub fn addJsonslToLibrary(
     b: *std.Build,
@@ -107,7 +104,7 @@ pub fn addBsonToLibrary(
 ) !*std.Build.Module {
     _ = lib;
     const bson_mod = b.createModule(.{
-        .root_source_file = null,
+        .root_source_file = b.path("src/bson.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -120,7 +117,7 @@ pub fn addBsonToLibrary(
 
     bson_mod.addIncludePath(upstream.path("src/common/src"));
     bson_mod.addIncludePath(upstream.path("src/libbson/src"));
- 
+
     bson_mod.addCMacro("BSON_COMPILATION", "1");
 
     if (target.result.os.tag == .linux) {

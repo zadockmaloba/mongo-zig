@@ -103,7 +103,7 @@ pub fn addBsonToLibrary(
     optimize: std.builtin.OptimizeMode,
 ) !*std.Build.Module {
     _ = lib;
-    const bson_mod = b.createModule(.{
+    const bson_mod = b.addModule("bson", .{
         .root_source_file = b.path("src/bson.zig"),
         .target = target,
         .optimize = optimize,

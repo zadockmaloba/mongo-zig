@@ -54,21 +54,51 @@ pub fn build(b: *std.Build) void {
 
     const comm_mod = try common_build.addCommonToLibrary(b, lib, upstream, target, optimize);
     comm_mod.addConfigHeader(common_conf);
+    const comm_lib = b.addLibrary(.{
+        .linkage = .static,
+        .name = "mongo_common",
+        .root_module = comm_mod,
+    });
 
     const kms_mod = try kms_build.addKmsToLibrary(b, lib, upstream, target, optimize);
     kms_mod.addConfigHeader(common_conf);
+    const kms_lib = b.addLibrary(.{
+        .linkage = .static,
+        .name = "mongo_kms",
+        .root_module = kms_mod,
+    });
 
     const utf8_mod = try utf8_build.addUtf8ToLibrary(b, lib, upstream, target, optimize);
     utf8_mod.addConfigHeader(common_conf);
+    const utf8_lib = b.addLibrary(.{
+        .linkage = .static,
+        .name = "mongo_utf8",
+        .root_module = utf8_mod,
+    });
 
     const bson_mod = try bson_build.addBsonToLibrary(b, lib, upstream, target, optimize);
     bson_mod.addConfigHeader(common_conf);
+    const bson_lib = b.addLibrary(.{
+        .linkage = .static,
+        .name = "mongo_bson",
+        .root_module = bson_mod,
+    });
 
     const jsonsl_mod = try bson_build.addJsonslToLibrary(b, lib, upstream, target, optimize);
     jsonsl_mod.addConfigHeader(common_conf);
+    const jsonsl_lib = b.addLibrary(.{
+        .linkage = .static,
+        .name = "mongo_jsonsl",
+        .root_module = jsonsl_mod,
+    });
 
     const mongo_mod = try mongo_build.addMongoToLibrary(b, lib, upstream, target, optimize);
     mongo_mod.addConfigHeader(common_conf);
+    const mongo_lib = b.addLibrary(.{
+        .linkage = .static,
+        .name = "mongo_mongoc",
+        .root_module = mongo_mod,
+    });
 
     inline for (bson_build.bson_config_files) |_header| {
         const tmp = b.addConfigHeader(
@@ -107,7 +137,22 @@ pub fn build(b: *std.Build) void {
 
     //==========================================
 
+    lib_mod.linkLibrary(comm_lib);
+    lib_mod.linkLibrary(kms_lib);
+    lib_mod.linkLibrary(utf8_lib);
+    lib_mod.linkLibrary(bson_lib);
+    lib_mod.linkLibrary(jsonsl_lib);
+    lib_mod.linkLibrary(mongo_lib);
+
+    //==========================================
+
     b.installArtifact(lib);
+    b.installArtifact(comm_lib);
+    b.installArtifact(kms_lib);
+    b.installArtifact(utf8_lib);
+    b.installArtifact(bson_lib);
+    b.installArtifact(jsonsl_lib);
+    b.installArtifact(mongo_lib);
 
     const lib_unit_tests = b.addTest(.{
         .root_module = lib_mod,

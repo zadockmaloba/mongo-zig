@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub export const mongoc = @cImport({
+pub const mongoc = @cImport({
     @cInclude("mongoc/mongoc.h");
     @cInclude("bson/bson.h");
 });

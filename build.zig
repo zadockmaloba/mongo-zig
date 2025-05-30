@@ -76,14 +76,6 @@ pub fn build(b: *std.Build) void {
         .root_module = utf8_mod,
     });
 
-    const bson_mod = try bson_build.addBsonToLibrary(b, lib, upstream, target, optimize);
-    bson_mod.addConfigHeader(common_conf);
-    const bson_lib = b.addLibrary(.{
-        .linkage = .static,
-        .name = "mongo_bson",
-        .root_module = bson_mod,
-    });
-
     const jsonsl_mod = try bson_build.addJsonslToLibrary(b, lib, upstream, target, optimize);
     jsonsl_mod.addConfigHeader(common_conf);
     const jsonsl_lib = b.addLibrary(.{
@@ -91,6 +83,21 @@ pub fn build(b: *std.Build) void {
         .name = "mongo_jsonsl",
         .root_module = jsonsl_mod,
     });
+    jsonsl_mod.linkLibrary(comm_lib);
+    jsonsl_mod.linkLibrary(kms_lib);
+    jsonsl_mod.linkLibrary(utf8_lib);
+
+    const bson_mod = try bson_build.addBsonToLibrary(b, lib, upstream, target, optimize);
+    bson_mod.addConfigHeader(common_conf);
+    const bson_lib = b.addLibrary(.{
+        .linkage = .static,
+        .name = "mongo_bson",
+        .root_module = bson_mod,
+    });
+    bson_mod.linkLibrary(comm_lib);
+    bson_mod.linkLibrary(kms_lib);
+    bson_mod.linkLibrary(utf8_lib);
+    bson_mod.linkLibrary(jsonsl_lib);
 
     const mongo_mod = try mongo_build.addMongoToLibrary(b, lib, upstream, target, optimize);
     mongo_mod.addConfigHeader(common_conf);
@@ -99,6 +106,11 @@ pub fn build(b: *std.Build) void {
         .name = "mongo_mongoc",
         .root_module = mongo_mod,
     });
+    mongo_mod.linkLibrary(comm_lib);
+    mongo_mod.linkLibrary(kms_lib);
+    mongo_mod.linkLibrary(utf8_lib);
+    mongo_mod.linkLibrary(jsonsl_lib);
+    mongo_mod.linkLibrary(bson_lib);
 
     inline for (bson_build.bson_config_files) |_header| {
         const tmp = b.addConfigHeader(

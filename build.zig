@@ -86,15 +86,15 @@ pub fn build(b: *std.Build) void {
                 .libbson_VERSION_PRERELEASE = null,
                 .BSON_BYTE_ORDER = 1234,
                 .BSON_HAVE_STDBOOL_H = 1,
-                .BSON_OS = 1,
+                .BSON_OS = 1, //Force POSIX for now
                 .BSON_HAVE_CLOCK_GETTIME = 1,
                 .BSON_HAVE_STRINGS_H = 1,
-                .BSON_HAVE_STRNLEN = 0, //Fails in Linux systems if set to true
+                .BSON_HAVE_STRNLEN = 1,
                 .BSON_HAVE_SNPRINTF = 0,
                 .BSON_HAVE_GMTIME_R = 1,
                 .BSON_HAVE_TIMESPEC = 1,
                 .BSON_HAVE_RAND_R = 1,
-                .BSON_HAVE_STRLCPY = 0, //Fails in Linux systems if set to true
+                .BSON_HAVE_STRLCPY = 1,
                 .BSON_HAVE_ALIGNED_ALLOC = 1,
             },
         );

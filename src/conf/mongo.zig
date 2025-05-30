@@ -68,10 +68,10 @@ pub fn addMongoToLibrary(
                 .MONGOC_ENABLE_CRYPTO = 1,
                 .MONGOC_ENABLE_CRYPTO_SYSTEM_PROFILE = 0,
                 .MONGOC_HAVE_ASN1_STRING_GET0_DATA = 1,
-                .MONGOC_ENABLE_SASL = 1,
-                .MONGOC_ENABLE_SASL_CYRUS = 1,
+                .MONGOC_ENABLE_SASL = 0,
+                .MONGOC_ENABLE_SASL_CYRUS = 0,
                 .MONGOC_ENABLE_SASL_SSPI = 0, //TODO: Work on Windows build
-                .MONGOC_HAVE_SASL_CLIENT_DONE = 1,
+                .MONGOC_HAVE_SASL_CLIENT_DONE = 0,
                 .MONGOC_HAVE_SOCKLEN = 1,
                 .MONGOC_ENABLE_SRV = 1,
                 .MONGOC_HAVE_DNSAPI = 0, //TODO: Work on Windows build

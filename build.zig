@@ -111,6 +111,7 @@ pub fn build(b: *std.Build) void {
     mongo_mod.linkLibrary(utf8_lib);
     mongo_mod.linkLibrary(jsonsl_lib);
     mongo_mod.linkLibrary(bson_lib);
+    mongo_mod.linkLibrary(zlib_dep.artifact("z"));
 
     inline for (bson_build.bson_config_files) |_header| {
         const tmp = b.addConfigHeader(

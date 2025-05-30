@@ -75,7 +75,7 @@ pub fn addJsonslToLibrary(
     optimize: std.builtin.OptimizeMode,
 ) !*std.Build.Module {
     _ = lib;
-    const jsonsl_mod = b.addModule("jsonsl", .{
+    const jsonsl_mod = b.createModule(.{
         .root_source_file = null,
         .target = target,
         .optimize = optimize,
@@ -103,7 +103,7 @@ pub fn addBsonToLibrary(
     optimize: std.builtin.OptimizeMode,
 ) !*std.Build.Module {
     _ = lib;
-    const bson_mod = b.addModule("bson", .{
+    const bson_mod = b.createModule(.{
         .root_source_file = b.path("src/bson.zig"),
         .target = target,
         .optimize = optimize,

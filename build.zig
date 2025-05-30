@@ -1,5 +1,6 @@
 const std = @import("std");
 const bson_build = @import("build/bson.zig");
+const mongo_build = @import("build/mongo.zig");
 const common_build = @import("build/common.zig");
 const kms_build = @import("build/kms-message.zig");
 const utf8_build = @import("build/utf8proc.zig");
@@ -66,11 +67,15 @@ pub fn build(b: *std.Build) void {
     const jsonsl_mod = try bson_build.addJsonslToLibrary(b, lib, upstream, target, optimize);
     jsonsl_mod.addConfigHeader(common_conf);
 
+    const mongo_mod = try mongo_build.addMongoToLibrary(b, lib, upstream, target, optimize);
+    mongo_mod.addConfigHeader(common_conf);
+
     lib_mod.addImport("mongo_common", comm_mod);
     lib_mod.addImport("mongo_utf8", utf8_mod);
     lib_mod.addImport("mongo_kms", kms_mod);
     lib_mod.addImport("mongo_bson", bson_mod);
     lib_mod.addImport("mongo_jsonsl", jsonsl_mod);
+    lib_mod.addImport("mongo_mongoc", mongo_mod);
 
     inline for (bson_build.bson_config_files) |_header| {
         const tmp = b.addConfigHeader(
@@ -104,6 +109,7 @@ pub fn build(b: *std.Build) void {
         comm_mod.addConfigHeader(tmp);
         bson_mod.addConfigHeader(tmp);
         jsonsl_mod.addConfigHeader(tmp);
+        mongo_mod.addConfigHeader(tmp);
     }
 
     //==========================================

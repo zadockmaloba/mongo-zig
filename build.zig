@@ -1,9 +1,9 @@
 const std = @import("std");
-const bson_build = @import("build/bson.zig");
-const mongo_build = @import("build/mongo.zig");
-const common_build = @import("build/common.zig");
-const kms_build = @import("build/kms-message.zig");
-const utf8_build = @import("build/utf8proc.zig");
+const bson_build = @import("conf/bson.zig");
+const mongo_build = @import("conf/mongo.zig");
+const common_build = @import("conf/common.zig");
+const kms_build = @import("conf/kms-message.zig");
+const utf8_build = @import("conf/utf8proc.zig");
 
 const common_config_files = .{
     "common-config.h",

@@ -113,6 +113,16 @@ pub fn build(b: *std.Build) void {
     mongo_mod.linkLibrary(bson_lib);
     mongo_mod.linkLibrary(zlib_dep.artifact("z"));
 
+    if (target.result.os.tag == .macos) {
+        if (b.lazyDependency("xcode_frameworks", .{})) |dep| {
+            mongo_mod.addSystemFrameworkPath(dep.path("Frameworks"));
+            mongo_mod.addSystemIncludePath(dep.path("include"));
+            mongo_mod.addLibraryPath(dep.path("lib"));
+        }
+
+        mongo_mod.linkFramework("Foundation", .{ .needed = true });
+    }
+
     inline for (bson_build.bson_config_files) |_header| {
         const tmp = b.addConfigHeader(
             .{

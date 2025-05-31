@@ -17,6 +17,11 @@
             .hash = "N-V-__8AABHMqAWYuRdIlflwi8gksPnlUMQBiSxAqQAAZFms",
             .lazy = true,
         },
+        .libressl = .{
+            .url = "git+https://github.com/allyourcodebase/libressl?ref=4.0.0+2#18d16b266328f3e568ab4ee614ae8c054b682c9e",
+            .hash = "libressl-4.0.0--kqV4LnSAACWhbUEm8O5KHGuJpNJsN0xLIlbFun7ql-m",
+            .lazy = true,
+        },
     },
     .paths = .{
         "build.zig",

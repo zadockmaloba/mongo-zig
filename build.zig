@@ -123,6 +123,11 @@ pub fn build(b: *std.Build) void {
         mongo_mod.linkFramework("Foundation", .{ .needed = true });
     }
 
+    if (b.lazyDependency("libressl", .{ .target = target, .optimize = optimize })) |libressl_dep| {
+        const libressl = libressl_dep.artifact("ssl");
+        mongo_mod.linkLibrary(libressl);
+    }
+
     inline for (bson_build.bson_config_files) |_header| {
         const tmp = b.addConfigHeader(
             .{

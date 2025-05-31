@@ -121,6 +121,7 @@ pub fn build(b: *std.Build) void {
         }
 
         mongo_mod.linkFramework("Foundation", .{ .needed = true });
+        mongo_mod.linkFramework("Security", .{ .needed = true });
     }
 
     if (b.lazyDependency("libressl", .{ .target = target, .optimize = optimize })) |libressl_dep| {

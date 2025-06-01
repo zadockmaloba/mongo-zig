@@ -112,7 +112,6 @@ pub fn build(b: *std.Build) void {
     mongo_mod.linkLibrary(jsonsl_lib);
     mongo_mod.linkLibrary(bson_lib);
     mongo_mod.linkLibrary(zlib_dep.artifact("z"));
-    mongo_mod.link_libc = true;
 
     if (target.result.os.tag == .macos) {
         if (b.lazyDependency("xcode_frameworks", .{})) |dep| {
@@ -123,6 +122,7 @@ pub fn build(b: *std.Build) void {
 
         mongo_mod.linkFramework("Foundation", .{ .needed = true });
         mongo_mod.linkFramework("Security", .{ .needed = true });
+        mongo_mod.linkSystemLibrary("resolv", .{ .needed = true });
     }
 
     if (b.lazyDependency("libressl", .{ .target = target, .optimize = optimize })) |libressl_dep| {

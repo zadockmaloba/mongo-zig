@@ -63,7 +63,7 @@ pub fn addMongoToLibrary(
                 .MONGOC_ENABLE_SSL_SECURE_TRANSPORT = 1,
                 .MONGOC_ENABLE_CRYPTO_COMMON_CRYPTO = 0,
                 .MONGOC_ENABLE_SSL_OPENSSL = 0, //Use system's SSL implementation
-                .MONGOC_ENABLE_CRYPTO_LIBCRYPTO = 0,
+                .MONGOC_ENABLE_CRYPTO_LIBCRYPTO = 1,
                 .MONGOC_ENABLE_SSL = 1,
                 .MONGOC_ENABLE_CRYPTO = 1,
                 .MONGOC_ENABLE_CRYPTO_SYSTEM_PROFILE = 0,

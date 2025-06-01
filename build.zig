@@ -112,6 +112,7 @@ pub fn build(b: *std.Build) void {
     mongo_mod.linkLibrary(jsonsl_lib);
     mongo_mod.linkLibrary(bson_lib);
     mongo_mod.linkLibrary(zlib_dep.artifact("z"));
+    mongo_mod.link_libc = true;
 
     if (target.result.os.tag == .macos) {
         if (b.lazyDependency("xcode_frameworks", .{})) |dep| {

@@ -5,6 +5,9 @@ pub const mongoc = @cImport({
     @cInclude("bson/bson.h");
 });
 
+const bson_namespace = @import("bson.zig");
+pub const BsonAllocator = bson_namespace.BsonAllocator;
+
 pub fn mongocInit() void {
     mongoc.mongoc_init();
 }
@@ -25,10 +28,15 @@ pub const MongoDatabase = struct {
 
 pub const MongoClient = struct {
     client: *mongoc.mongoc_client_t,
+    allocator: BsonAllocator,
 
-    pub fn init(uri: [*c]const u8) !MongoClient {
+    pub fn init(allocator: BsonAllocator, uri: [*c]const u8) !MongoClient {
+        //_ = allocator; // Use the allocator for BSON memory management
         const client = mongoc.mongoc_client_new(uri);
-        return if (client != null) MongoClient{ .client = client.? } else error.ClientCreationFailed;
+        return if (client != null) MongoClient{
+            .allocator = allocator,
+            .client = client.?,
+        } else error.ClientCreationFailed;
     }
 
     pub fn deinit(self: *const MongoClient) void {

@@ -6,7 +6,11 @@ pub const mongoc = @cImport({
 });
 
 const bson_namespace = @import("bson.zig");
+pub const BSON_NEW = bson_namespace.BSON_NEW;
 pub const BsonAllocator = bson_namespace.BsonAllocator;
+pub const Bson = bson_namespace.Bson;
+pub const BsonError = bson_namespace.BsonError;
+pub const MongoBson = bson_namespace.MongoBson;
 
 pub fn mongocInit() void {
     mongoc.mongoc_init();
@@ -21,7 +25,7 @@ pub const MongoDatabase = struct {
     pub fn init(db: *mongoc.mongoc_database_t) !MongoDatabase {
         return MongoDatabase{ .db = db };
     }
-    pub fn deinit(self: *MongoDatabase) void {
+    pub fn deinit(self: MongoDatabase) void {
         mongoc.mongoc_database_destroy(self.db);
     }
 };
@@ -43,13 +47,29 @@ pub const MongoClient = struct {
         _ = self;
     }
 
-    pub fn getDatabase(self: *MongoClient, db_name: []const u8) !MongoDatabase {
+    pub fn getDatabase(self: MongoClient, db_name: [*c]const u8) !MongoDatabase {
         const db = mongoc.mongoc_client_get_database(self.client, db_name);
         if (db == null) {
             return error.DatabaseNotFound;
         }
         return .{
-            .db = db,
+            .db = db.?,
         };
+    }
+
+    pub fn sendSimpleCommand(self: MongoClient, db_name: [*c]const u8, command: MongoBson) !mongoc.bson_t {
+        var reply = mongoc.bson_t{};
+        const result = mongoc.mongoc_client_command_simple(
+            self.client,
+            db_name,
+            @ptrCast(command.ptr),
+            null,
+            &reply,
+            null,
+        );
+        if (!result) {
+            return error.CommandFailed;
+        }
+        return reply;
     }
 };

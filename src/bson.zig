@@ -45,7 +45,7 @@ pub const BsonAllocator = struct {
     // Callback implementations that bridge Zig's allocator to BSON's vtable
 
     fn malloc(size: usize) callconv(.C) ?*anyopaque {
-        const tmp = default_allocator.alignedAlloc(u8, 8, size) catch |err| {
+        const tmp = default_allocator.alignedAlloc(u8, 1, size) catch |err| {
             std.log.err("BSON malloc failed: {}", .{err});
             return null;
         };
@@ -63,7 +63,7 @@ pub const BsonAllocator = struct {
 
     fn calloc(n_members: usize, size: usize) callconv(.C) ?*anyopaque {
         const total = n_members * size;
-        const tmp = default_allocator.alignedAlloc(u8, 8, size) catch |err| {
+        const tmp = default_allocator.alignedAlloc(u8, 1, total) catch |err| {
             std.log.err("BSON calloc failed: {}", .{err});
             return null;
         };
@@ -188,6 +188,9 @@ pub const MongoBson = struct {
     allocator: BsonAllocator,
 
     pub fn init(allocator: BsonAllocator, _bson: ?*Bson) MongoBson {
+        std.debug.print("MongoBson.init: BSON: {any}\n", .{
+            _bson.?.*,
+        });
         return .{
             .allocator = allocator,
             .ptr = _bson.?,
@@ -198,3 +201,13 @@ pub const MongoBson = struct {
         bson.bson_destroy(self.ptr);
     }
 };
+
+test "Bson new" {
+    const allocator = std.testing.allocator;
+    const bson_allocator = BsonAllocator.init(allocator);
+    defer bson_allocator.deinit();
+    const b = MongoBson.init(bson_allocator, bson_new(null, BCON_MAGIC, 0));
+    defer b.deinit();
+    try std.testing.expect(b.ptr != null);
+    try std.testing.expect(b.ptr.* == .{});
+}

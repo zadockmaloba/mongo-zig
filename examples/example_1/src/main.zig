@@ -3,11 +3,13 @@ const std = @import("std");
 const mongo = @import("mongo_zig");
 
 pub fn main() !void {
-    const bson_allocator = mongo.BsonAllocator.init(std.heap.page_allocator);
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer std.debug.assert(gpa.deinit() != .leak);
 
+    const bson_allocator = mongo.BsonAllocator.init(std.heap.page_allocator);
     mongo.mongocInit();
     defer mongo.mongocDeinit();
-    errdefer mongo.mongocDeinit();
+    //errdefer mongo.mongocDeinit();
 
     const client = try mongo.MongoClient.init(bson_allocator, "mongodb://localhost:27017");
     defer client.deinit();
@@ -21,4 +23,29 @@ pub fn main() !void {
         std.log.err("Failed to send command: {}", .{err});
         return err;
     };
+}
+
+test "Mongo Allocation" {
+    const bson_allocator = mongo.BsonAllocator.init(std.testing.allocator);
+    defer bson_allocator.deinit();
+
+    mongo.mongocInit();
+    defer mongo.mongocDeinit();
+    //errdefer mongo.mongocDeinit();
+
+    const client = try mongo.MongoClient.init(bson_allocator, "mongodb://localhost:27017");
+    defer client.deinit();
+
+    const db = try client.getDatabase("test");
+    defer db.deinit();
+}
+
+test "Bson new" {
+    const allocator = std.testing.allocator;
+    const bson_allocator = mongo.BsonAllocator.init(allocator);
+    defer bson_allocator.deinit();
+    const b = mongo.MongoBson.init(bson_allocator, mongo.bson_new(null, "BCON_MAGIC", @as(c_int, @intCast(0))));
+    defer b.deinit();
+    //try std.testing.expect(b.ptr != null);
+    //try std.testing.expect(b.ptr.* == .{});
 }

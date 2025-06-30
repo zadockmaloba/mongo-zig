@@ -65,15 +65,21 @@ pub const MongoClient = struct {
 
         std.debug.print("Sending command {any} to database: {s}\n", .{ command.ptr.*, db_name });
 
+        var err: BsonError = .{};
         const result = mongoc.mongoc_client_command_simple(
             self.client,
             db_name,
             @ptrCast(command.ptr),
             null,
             @ptrCast(reply.?),
-            null,
+            @ptrCast(@alignCast(&err)),
         );
         if (!result) {
+            std.log.err("Simple Command Failed - {d}.{d}: {s}", .{
+                err.domain,
+                err.code,
+                @as([*c]u8, err.message[0 .. err.message.len - 1 :0]),
+            });
             return error.CommandFailed;
         }
         return reply.?.*;

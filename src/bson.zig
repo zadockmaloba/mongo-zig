@@ -162,20 +162,34 @@ pub const bcon_types = union(enum) {
     bcon_type_error: bool,
 };
 
-pub extern "c" fn bson_new(unused: ?*anyopaque, ...) *Bson;
+pub extern "c" fn bcon_new(unused: ?*anyopaque, ...) [*c]Bson;
 
-pub const BCON_MAGIC = "BCON_MAGIC";
-pub const BCONE_MAGIC = "BCONE_MAGIC";
+pub const BCON_MAGIC = bson.bson_bcon_magic;
+pub const BCONE_MAGIC = bson.bson_bcone_magic;
 
-pub fn BSON_NEW(key: [*c]const u8, _type: bcon_types) ?*Bson {
-    _ = key;
+pub fn BCON_NEW(key: [*c]const u8, _type: bcon_types) ?*Bson {
+    //_ = key;
+    std.debug.print("Enum to int: {d}\n", .{@intFromEnum(_type)});
+    std.debug.print("BCON_NEW: key: {s}, type: {any}\n", .{key, _type});
+    std.debug.print("MAGIC: {s}\n", .{BCON_MAGIC()});
+
     switch (_type) {
         .bcon_type_int32 => |val| {
-            return bson_new(
+            return bcon_new(
                 null,
-                BCON_MAGIC,
-                @as(c_int, @intCast(@intFromEnum(bcon_types.bcon_type_int32))),
+                BCON_MAGIC(),
+                @as(c_int, @intCast(@intFromEnum(_type))),
                 val,
+                bson.NULL,
+            );
+        },
+        .bcon_type_utf8 => |val| {
+            return bcon_new(
+                null,
+                BCON_MAGIC(),
+                @as(c_int, @intCast(@intFromEnum(_type))),
+                val,
+                bson.NULL,
             );
         },
         else => {},
@@ -191,6 +205,7 @@ pub const MongoBson = struct {
         std.debug.print("MongoBson.init: BSON: {any}\n", .{
             _bson.?.*,
         });
+        @breakpoint();
         return .{
             .allocator = allocator,
             .ptr = _bson.?,
@@ -206,7 +221,7 @@ test "Bson new" {
     const allocator = std.testing.allocator;
     const bson_allocator = BsonAllocator.init(allocator);
     defer bson_allocator.deinit();
-    const b = MongoBson.init(bson_allocator, bson_new(null, BCON_MAGIC, 0));
+    const b = MongoBson.init(bson_allocator, bcon_new(null, BCON_MAGIC, 0));
     defer b.deinit();
     try std.testing.expect(b.ptr != null);
     try std.testing.expect(b.ptr.* == .{});

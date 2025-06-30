@@ -7,7 +7,7 @@ pub const mongoc = @cImport({
 
 const bson_namespace = @import("bson.zig");
 pub const bson_new = bson_namespace.bson_new;
-pub const BSON_NEW = bson_namespace.BSON_NEW;
+pub const BCON_NEW = bson_namespace.BCON_NEW;
 pub const BsonAllocator = bson_namespace.BsonAllocator;
 pub const Bson = bson_namespace.Bson;
 pub const BsonError = bson_namespace.BsonError;
@@ -61,7 +61,7 @@ pub const MongoClient = struct {
     pub fn sendSimpleCommand(self: MongoClient, db_name: [*c]const u8, command: MongoBson) !Bson {
         const replyBuffer = try self.allocator.allocator.alignedAlloc(Bson, 8, 1);
         defer self.allocator.allocator.free(replyBuffer);
-        const reply = BSON_NEW("tmp", .{ .bcon_type_int32 = 1 });
+        const reply = BCON_NEW("tmp", .{ .bcon_type_int32 = 1 });
 
         std.debug.print("Sending command {any} to database: {s}\n", .{ command.ptr.*, db_name });
 

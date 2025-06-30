@@ -23,7 +23,7 @@ pub fn main() !void {
     const db = try client.getDatabase("test");
     defer db.deinit();
 
-    const ping: mongo.MongoBson = mongo.MongoBson.init(bson_allocator, mongo.BSON_NEW("ping", .{ .bcon_type_int32 = 1 }));
+    const ping: mongo.MongoBson = mongo.MongoBson.init(bson_allocator, mongo.BCON_NEW("ping", .{ .bcon_type_utf8 = "pong" }));
     defer ping.deinit();
 
     _ = client.sendSimpleCommand("admin", ping) catch |err| {
@@ -50,7 +50,7 @@ test "Bson new" {
     const allocator = std.testing.allocator;
     const bson_allocator = mongo.BsonAllocator.init(allocator);
     defer bson_allocator.deinit();
-    const b = mongo.MongoBson.init(bson_allocator, mongo.bson_new(null, "BCON_MAGIC", @as(c_int, @intCast(0))));
+    const b = mongo.MongoBson.init(bson_allocator, mongo.bcon_new(null, "BCON_MAGIC", @as(c_int, @intCast(0))));
     defer b.deinit();
     //try std.testing.expect(b.ptr != null);
     //try std.testing.expect(b.ptr.* == .{});
